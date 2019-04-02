@@ -10,53 +10,48 @@ import (
 
 type SwipeController struct {
 	beego.Controller
-	BaseController
 }
 
 //@Title Get all swipe list
+//@Description 获取轮播图列表
 //@router / [get]
-func (this *SwipeController) GetAllSwipe(){
-	defer this.ServeJSON()
+func (this *SwipeController) GetAllSwipe() {
 	o := orm.NewOrm()
-	datas := this.BaseJSON()
 	swipeList := []models.Swipe{}
 	o.QueryTable("Swipe").All(&swipeList)
-	datas["code"] = 0
-	datas["data"] = swipeList
-	this.Data["json"] = datas
-	return
+	this._return(0, "", swipeList)
 }
 
 //@Title Add swipe
+//@Description 添加轮播图 JSON format:[切片形式]
+//@Param img_url body string true "轮播图图片地址"
 //@router / [post]
-func (this *SwipeController) AddSwipe(){
-	defer this.ServeJSON()
-	datas := this.BaseJSON()
+func (this *SwipeController) AddSwipe() {
 	o := orm.NewOrm()
 	var swipe = []models.Swipe{}
-	err := json.Unmarshal(this.Ctx.Input.RequestBody,&swipe)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &swipe)
 	if err != nil {
 		msg := "Add swipe params failed"
 		logs.Info(msg)
-		datas["code"] = 10001
-		datas["message"] = msg
-		this.Data["json"] = datas
-		return
+		this._return(10003, msg, "")
 	}
-	id,err := o.InsertMulti(len(swipe),swipe)
+	id, err := o.InsertMulti(len(swipe), swipe)
 	if err != nil {
 		msg := "Add swipe params failed"
-		logs.Info(msg,err)
-		datas["code"] = 10001
-		datas["message"] = msg
-		this.Data["json"] = datas
-		return
+		logs.Info(msg, err)
+		this._return(10003, msg, "")
 	}
 	msg := "Add swipe success"
 	logs.Info(msg)
-	datas["code"] = 0
-	datas["message"] = msg
-	datas["data"] = id
+	this._return(0, msg, id)
+}
+
+func (this *SwipeController) _return(code int, message string, data interface{}) {
+	var datas = make(map[string]interface{})
+	datas["code"] = code
+	datas["message"] = message
+	datas["data"] = data
 	this.Data["json"] = datas
+	this.ServeJSON()
 	return
 }

@@ -2,7 +2,7 @@ package models
 
 import "Vue-cms-server/lib"
 
-type NewsCommnets struct {
+type NewsComments struct {
 	Id int `json:"id"`
 	Comment string `json:"comment"`
 	AddTime lib.Time `json:"add_time"`

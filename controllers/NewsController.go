@@ -10,36 +10,31 @@ import (
 
 type NewsController struct {
 	beego.Controller
-	BaseController
 }
 
-//@Title Get newsList
+//@Title /news/
+//@Description 获取新闻列表
 //@router / [get]
 func (this *NewsController) GetNewsList() {
-	defer this.ServeJSON()
 	msg := "get news list "
-	datas := this.BaseJSON()
 	o := orm.NewOrm()
 	var newsList = []models.NewsList{}
 	_, err := o.QueryTable("NewsList").RelatedSel().All(&newsList)
 	if err != nil {
-		datas["code"] = 10001
-		datas["message"] = msg + "failed"
-		this.Data["json"] = datas
-		return
+		this._return(10003, msg+"failed", "")
 	}
-	datas["code"] = 0
-	datas["message"] = msg + "success"
-	datas["data"] = newsList
-	this.Data["json"] = datas
-	return
+	this._return(0, msg+"success", newsList)
 }
 
-//@Title Add news
+//@Title /news/
+//@Description 添加新闻列表 JSON format:[normal]
+//@Param title body string true "新闻标题"
+//@Param click body int true "新闻点击次数"
+//@Param url body string true "新闻图片缩略图地址"
+//@Param add_time body string true "新闻发表时间"
+//@Param content body models.NewsContents true "新闻详细内容"
 //@router / [post]
 func (this *NewsController) AddNews() {
-	defer this.ServeJSON()
-	datas := this.BaseJSON()
 	o := orm.NewOrm()
 	var news = models.NewsList{}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &news)
@@ -48,47 +43,39 @@ func (this *NewsController) AddNews() {
 	_, err = o.Insert(&news)
 	if err != nil {
 		logs.Info(err)
-		datas["code"] = 10001
-		datas["message"] = "Add news failed"
-		datas["data"] = ""
-		this.Data["json"] = datas
-		return
+		this._return(10003, "Add news failed", "")
 	}
-	datas["code"] = 0
-	datas["message"] = "Add news success"
-	datas["data"] = ""
-	this.Data["json"] = datas
+	this._return(0, "Add news success", "")
 }
 
-//@Title Get news info
+//@Title /news/info/:id
+//@Description 获取新闻详细内容
+//@Param id path int true "新闻列表的id"
 //@router /info/:id [get]
 func (this *NewsController) GetNewsInfo() {
-	defer this.ServeJSON()
 	var info = models.NewsList{}
-
 	msg := "get news info "
-	datas := this.BaseJSON()
 	id, err := this.GetInt(":id")
 	if err != nil {
-		datas["code"] = 10001
-		datas["message"] = msg + "failed"
-		this.Data["json"] = datas
-		return
+		this._return(10003, msg+"failed", "")
 	}
 	logs.Info("要查询的详情id为:", id)
 	o := orm.NewOrm()
 	err = o.QueryTable("NewsList").RelatedSel().Filter("Id", id).One(&info)
 	if err != nil {
-		datas["code"] = 10001
-		datas["message"] = msg + "failed"
-		this.Data["json"] = datas
-		return
+		this._return(10003, msg+"failed", "")
 	}
 	info.Click += 1
 	o.Update(&info)
-	datas["code"] = 0
-	datas["message"] = msg + "success"
-	datas["data"] = info
+	this._return(0, msg+"success", info)
+}
+
+func (this *NewsController) _return(code int, message string, data interface{}) {
+	var datas = make(map[string]interface{})
+	datas["code"] = code
+	datas["message"] = message
+	datas["data"] = data
 	this.Data["json"] = datas
+	this.ServeJSON()
 	return
 }

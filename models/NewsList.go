@@ -11,6 +11,6 @@ type NewsList struct {
 	Click int `json:"click"`
 	Url string `json:"url"`
 	Content *NewsContents `orm:"rel(one);" json:"content"`
-	Comments []*NewsCommnets `orm:"reverse(many)" json:"-"`
+	Comments []*NewsComments `orm:"reverse(many)" json:"-"`
 }
 

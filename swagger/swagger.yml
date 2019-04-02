@@ -1,0 +1,290 @@
+swagger: "2.0"
+info:
+  title: beego Test API
+  description: beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: astaxie@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /news/:
+    get:
+      tags:
+      - news
+      description: 获取新闻列表
+      operationId: NewsController./news/
+    post:
+      tags:
+      - news
+      description: 添加新闻列表 JSON format:[normal]
+      operationId: NewsController./news/
+      parameters:
+      - in: body
+        name: title
+        description: 新闻标题
+        required: true
+        type: string
+      - in: body
+        name: click
+        description: 新闻点击次数
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: url
+        description: 新闻图片缩略图地址
+        required: true
+        type: string
+      - in: body
+        name: add_time
+        description: 新闻发表时间
+        required: true
+        type: string
+      - in: body
+        name: content
+        description: 新闻详细内容
+        required: true
+        schema:
+          $ref: '#/definitions/models.NewsContents'
+  /news/comments/{id}:
+    get:
+      tags:
+      - news
+      description: 根据新闻 id 获取新闻评论列表
+      operationId: CommentsController./news/comments/:id
+      parameters:
+      - in: path
+        name: id
+        description: 新闻的id
+        required: true
+        type: integer
+        format: int64
+    post:
+      tags:
+      - news
+      description: 根据新闻 id 添加新闻评论 JSON format:[normal]
+      operationId: CommentsController./news/comments/:id
+      parameters:
+      - in: body
+        name: comment
+        description: 评论内容
+        required: true
+        type: string
+      - in: body
+        name: add_time
+        description: 添加评论时间[%Y-%m-%d %H:%M:%S]
+        required: true
+        type: string
+  /news/info/{id}:
+    get:
+      tags:
+      - news
+      description: 获取新闻详细内容
+      operationId: NewsController./news/info/:id
+      parameters:
+      - in: path
+        name: id
+        description: 新闻列表的id
+        required: true
+        type: integer
+        format: int64
+  /photos/comments/{id}:
+    get:
+      tags:
+      - photos
+      description: 根据图片 id 获取图片详情
+      operationId: PhotosCommentsController./photos/comments/:id
+      parameters:
+      - in: path
+        name: id
+        description: 图片id
+        required: true
+        type: integer
+        format: int64
+    post:
+      tags:
+      - photos
+      description: 根据图片 id 添加评论 JSON format:[normal]
+      operationId: PhotosCommentsController./photos/comments/:id
+      parameters:
+      - in: body
+        name: comment
+        description: 评论内容
+        required: true
+        type: string
+      - in: body
+        name: add_time
+        description: 添加评论时间[%Y-%m-%d %H:%M:%S]
+        required: true
+        type: string
+  /photos/humInfo/{id}:
+    post:
+      tags:
+      - photos
+      description: 添加图片列表 JSON format:[切片]
+      operationId: PhotosController./photos/humInfo/:id
+      parameters:
+      - in: body
+        name: src
+        description: 图片地址
+        required: true
+        type: string
+  /photos/info/{id}:
+    get:
+      tags:
+      - photos
+      description: 根据图片id 查找图片详细信息
+      operationId: PhotosController./info/:id
+      parameters:
+      - in: path
+        name: id
+        description: 图片的id
+        required: true
+        type: integer
+        format: int64
+  /photos/list:
+    post:
+      tags:
+      - photos
+      description: 添加图片列表 JSON format:[normal]
+      operationId: PhotosController./photos/list
+      parameters:
+      - in: body
+        name: title
+        description: 图片类型
+        required: true
+        type: string
+      - in: body
+        name: data
+        description: 图片详情 JSON format:[切片形式]
+        required: true
+        schema:
+          $ref: '#/definitions/models.PhotosList'
+  /photos/list/{id}:
+    get:
+      tags:
+      - photos
+      description: 根据图片类型获取图片列表,0 默认为全部列表
+      operationId: PhotosController./list/:id
+      parameters:
+      - in: path
+        name: id
+        description: 图片类型的id
+        required: true
+        type: integer
+        format: int64
+  /photos/types:
+    get:
+      tags:
+      - photos
+      description: 获取图片类型列表
+      operationId: PhotosController./photos/types
+    post:
+      tags:
+      - photos
+      description: 添加图片类型 JSON format:[切片形式]
+      operationId: PhotosController./photos/types
+      parameters:
+      - in: body
+        name: title
+        description: 图片类型
+        required: true
+        type: string
+  /swipe/:
+    get:
+      tags:
+      - swipe
+      description: 获取轮播图列表
+      operationId: SwipeController.Get all swipe list
+    post:
+      tags:
+      - swipe
+      description: 添加轮播图 JSON format:[切片形式]
+      operationId: SwipeController.Add swipe
+      parameters:
+      - in: body
+        name: img_url
+        description: 轮播图图片地址
+        required: true
+        type: string
+definitions:
+  lib.Time:
+    title: Time
+    type: object
+  models.NewsContents:
+    title: NewsContents
+    type: object
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+        format: int64
+      news_type:
+        type: string
+  models.PhotosComments:
+    title: PhotosComments
+    type: object
+    properties:
+      add_time:
+        $ref: '#/definitions/lib.Time'
+      comment:
+        type: string
+      id:
+        type: integer
+        format: int64
+  models.PhotosHum:
+    title: PhotosHum
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      src:
+        type: string
+  models.PhotosInfo:
+    title: PhotosInfo
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      photo_info:
+        type: string
+  models.PhotosList:
+    title: PhotosList
+    type: object
+    properties:
+      add_time:
+        $ref: '#/definitions/lib.Time'
+      click:
+        type: integer
+        format: int64
+      content:
+        type: string
+      id:
+        type: integer
+        format: int64
+      img_url:
+        type: string
+      photo_hum_list:
+        type: array
+        items:
+          $ref: '#/definitions/models.PhotosHum'
+      photo_info:
+        $ref: '#/definitions/models.PhotosInfo'
+      title:
+        type: string
+  models.PhotosType:
+    title: PhotosType
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string

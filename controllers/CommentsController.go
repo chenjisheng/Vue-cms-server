@@ -10,61 +10,55 @@ import (
 
 type CommentsController struct {
 	beego.Controller
-	BaseController
 }
 
-
-//@Title get comments
+//@Title /news/comments/:id
+//@Description 根据新闻 id 获取新闻评论列表
+//@Param id path int true "新闻的id"
 //@router /comments/:id [get]
-func (this *CommentsController) GetComments(){
-	defer this.ServeJSON()
-	datas := this.BaseJSON()
+func (this *CommentsController) GetComments() {
 	o := orm.NewOrm()
-	id,err := this.GetInt(":id")
-	pageIndex,err := this.GetInt("pageindex")
+	id, err := this.GetInt(":id")
+	pageIndex, err := this.GetInt("pageindex")
 	if err != nil {
-		datas["code"] = 1
-		datas["message"] = "params error"
-		this.Data["json"] = datas
-		return
+		this._return(10003, "params error", "")
 	}
-	var  comments []models.NewsCommnets
-	o.QueryTable("NewsCommnets").Filter("NewsList",id).Limit(3,3*(pageIndex-1)).All(&comments)
-	datas["code"] = 0
-	datas["data"] = comments
-	this.Data["json"] = datas
-	return
+	var comments []models.NewsComments
+	o.QueryTable("NewsComments").OrderBy("-AddTime").Filter("NewsList", id).Limit(3, 3*(pageIndex-1)).All(&comments)
+	this._return(0, "", comments)
 }
 
-//@Title add comments
+//@Title /news/comments/:id
+//@Description 根据新闻 id 添加新闻评论 JSON format:[normal]
 //@Param comment body string true "评论内容"
+//@Param add_time body string true "添加评论时间[%Y-%m-%d %H:%M:%S]"
 //@router /comments/:id [post]
-func (this *CommentsController) AddComment(){
-	defer this.ServeJSON()
-	datas := this.BaseJSON()
+func (this *CommentsController) AddComment() {
 	o := orm.NewOrm()
-	comment := models.NewsCommnets{}
+	comment := models.NewsComments{}
 	var news = models.NewsList{}
-	id,err := this.GetInt(":id")
+	id, err := this.GetInt(":id")
 	if err != nil {
-		datas["code"] = 1
-		datas["message"] = "params error"
-		this.Data["json"] = datas
-		return
+		this._return(10003, "params error", "")
 	}
 	news.Id = id
 	o.Read(&news)
-	err = json.Unmarshal(this.Ctx.Input.RequestBody,&comment)
+	err = json.Unmarshal(this.Ctx.Input.RequestBody, &comment)
 	comment.NewsList = &news
 	if err != nil {
-		datas["code"] = 1
-		datas["message"] = "params error"
-		this.Data["json"] = datas
-		return
+		this._return(10003, "params error", "")
 	}
 	logs.Info(comment)
 	o.Insert(&comment)
-	datas["code"] = 10000
+	this._return(0, "add news comment success", "")
+}
+
+func (this *CommentsController) _return(code int, message string, data interface{}) {
+	var datas = make(map[string]interface{})
+	datas["code"] = code
+	datas["message"] = message
+	datas["data"] = data
 	this.Data["json"] = datas
+	this.ServeJSON()
 	return
 }
