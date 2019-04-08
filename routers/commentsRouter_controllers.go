@@ -25,10 +25,28 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["Vue-cms-server/controllers:NewsController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:NewsController"],
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"],
         beego.ControllerComments{
-            Method: "GetNewsList",
-            Router: `/`,
+            Method: "GetGoodsInfo",
+            Router: `/info/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"],
+        beego.ControllerComments{
+            Method: "GetAllList",
+            Router: `/list`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:GoodsController"],
+        beego.ControllerComments{
+            Method: "GetGoodsSwipe",
+            Router: `/swipe/:id`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -36,9 +54,9 @@ func init() {
 
     beego.GlobalControllerRouter["Vue-cms-server/controllers:NewsController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:NewsController"],
         beego.ControllerComments{
-            Method: "AddNews",
+            Method: "GetNewsList",
             Router: `/`,
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -72,15 +90,6 @@ func init() {
 
     beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"],
         beego.ControllerComments{
-            Method: "AddHumInfo",
-            Router: `/humInfo/:id`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"],
-        beego.ControllerComments{
             Method: "GetHumInfo",
             Router: `/humInfo/:id`,
             AllowHTTPMethods: []string{"get"},
@@ -93,15 +102,6 @@ func init() {
             Method: "GetPhotosInfo",
             Router: `/info/:id`,
             AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"],
-        beego.ControllerComments{
-            Method: "AddImgList",
-            Router: `/list`,
-            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -124,15 +124,6 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:PhotosController"],
-        beego.ControllerComments{
-            Method: "AddPhotoType",
-            Router: `/types`,
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
     beego.GlobalControllerRouter["Vue-cms-server/controllers:SwipeController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:SwipeController"],
         beego.ControllerComments{
             Method: "GetAllSwipe",
@@ -142,11 +133,29 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["Vue-cms-server/controllers:SwipeController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:SwipeController"],
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:UserController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:UserController"],
         beego.ControllerComments{
-            Method: "AddSwipe",
-            Router: `/`,
+            Method: "Login",
+            Router: `/login`,
             AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:UserController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:UserController"],
+        beego.ControllerComments{
+            Method: "Register",
+            Router: `/register`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["Vue-cms-server/controllers:VideoController"] = append(beego.GlobalControllerRouter["Vue-cms-server/controllers:VideoController"],
+        beego.ControllerComments{
+            Method: "GetAllVideo",
+            Router: `/`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
